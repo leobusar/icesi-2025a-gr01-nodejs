@@ -1,8 +1,20 @@
 import { Request, Response } from "express";
+import { UserInput } from '../models';
+import { userService } from "../services";
 
 class Usercontroller {
-    public create (req: Request, res: Response) {
-        res.status(201).send("create user");
+    public async  create (req: Request, res: Response) {
+        try {
+            const newUser = await userService.create(req.body as UserInput);
+            res.status(201).json(newUser);
+            
+        } catch (error) {
+            if(error instanceof ReferenceError){
+                res.status(400).json({message: "User already exists"});
+                return;
+            }
+            res.status(500).json(error);
+        }
     }
     public get (req: Request, res: Response) {
         res.send(`Get user with ${req.params.id}`);

@@ -18,4 +18,4 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     },{timestamps:true, collection: "users"});
 
-export const User = mongoose.model<UserDocument>("User", userSchema); 
+export const UserModel = mongoose.model<UserDocument>("User", userSchema); 

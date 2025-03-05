@@ -1,13 +1,16 @@
 //let express = require("express");
 import express, {Express, Request, Response} from 'express';
 import dotenv from 'dotenv';
-import {userRouter} from './routes/user.route'
+import {userRouter, postRouter} from './routes';
 import { db } from "./lib/connectionDB";
 
 dotenv.config();
 
 const app: Express = express();
 const port: number = process.env.PORT as any || 3000;
+
+app.use(express.json()); 
+app.use(express.urlencoded({ extended:true }))
 
 app.use('/user', userRouter);
 
