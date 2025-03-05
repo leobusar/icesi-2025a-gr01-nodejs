@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 export interface UserInput {
     name: string,
     email: string, 
-    password: string
+    password?: string
 }
 
 export interface UserDocument extends UserInput, mongoose.Document{
