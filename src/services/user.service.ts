@@ -1,5 +1,6 @@
-import { UserDocument, UserInput, UserModel } from "../models";
+import { UserDocument, UserInput, UserInputUpdate, UserLogin, UserLoginResponse, UserModel } from "../models";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 class UserService {
 
@@ -46,9 +47,8 @@ class UserService {
         }
     }    
 
-    public  async update(id: string, userInput: UserInput): Promise<UserDocument | null>{
+    public  async update(id: string, userInput: UserInputUpdate): Promise<UserDocument | null>{
         try {
-            delete userInput.password;
             const user: UserDocument | null = await UserModel.findOneAndUpdate({_id: id}, userInput, { returnOriginal: false });
             if(user)
                 user.password = "";
@@ -65,7 +65,42 @@ class UserService {
         } catch (error) {
             throw error;
         }
-    }    
+    }
+    
+    public async login(userLogin: UserLogin): Promise<UserLoginResponse | undefined>{
+        try {
+            const userExists: UserDocument | null = await this.findByEmail(userLogin.email);
+            if (userExists === null){
+                throw new ReferenceError("Not Authorized");
+            }
+            const isMatch: boolean = await bcrypt.compare(userLogin.password, userExists.password);  
+            if (!isMatch)
+                throw new ReferenceError("Not Authorized");
+            return {
+                user:{
+                    name: userExists.name,
+                    email: userExists.email,
+                    roles: ["admin"], 
+                    token: this.generateToken(userExists.email)
+                }, 
+                message: {
+                    contents: "Authorization OK",
+                    code: 0
+                } 
+            }
+        } catch (error) {
+            
+        }
+
+    }
+
+    public generateToken(email: string): string {
+        try {
+            return jwt.sign({user: {email}}, process.env.JWT_SECRET || "secret", {expiresIn: "10m"});
+        } catch (error) {
+            throw error;
+        }
+    }
 
 }
 

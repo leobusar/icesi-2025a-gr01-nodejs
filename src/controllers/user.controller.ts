@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserDocument, UserInput } from '../models';
+import { UserDocument, UserInput, UserLogin } from '../models';
 import { userService } from "../services";
 
 class Usercontroller {
@@ -64,6 +64,16 @@ class Usercontroller {
         } catch (error) {
             res.status(500).json(error);
         }  
+    }
+
+    public async login(req: Request, res: Response){
+        try {
+            const resObj =  await userService.login(req.body as UserLogin);
+            res.status(200).json(resObj);
+        }catch (error){
+            //*** Not authorized */
+            res.status(500).json(error);
+        }
     }
 
 }
