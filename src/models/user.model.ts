@@ -1,33 +1,5 @@
 import mongoose from "mongoose"
-
-export interface UserInput {
-    name: string,
-    email: string, 
-    password: string
-}
-
-export interface UserInputUpdate {
-    name: string,
-    email: string
-}
-
-export interface UserLogin {
-    email: string, 
-    password: string
-}
-
-export interface UserLoginResponse{
-    user?: {
-        name: string,
-        email: string,
-        roles: string[],
-        token: string
-    },
-    message: {
-        contents: string,
-        code: number
-    }
-}
+import { UserInput } from "../interfaces";
 
 export interface UserDocument extends UserInput, mongoose.Document{
     createdAt: Date, 
