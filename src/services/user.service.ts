@@ -86,7 +86,7 @@ class UserService {
                     name: userExists.name,
                     email: userExists.email,
                     roles: ["admin"], 
-                    token: this.generateToken(userExists.email)
+                    token: this.generateToken(userExists)
                 }
             }
         } catch (error) {
@@ -95,9 +95,16 @@ class UserService {
 
     }
 
-    public generateToken(email: string): string {
+    public generateToken(user: UserDocument): string {
         try {
-            return jwt.sign({user: {email}}, process.env.JWT_SECRET || "secret", {expiresIn: "10m"});
+            return jwt.sign({
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    name: user.name
+                }},
+                process.env.JWT_SECRET || "secret", 
+                {expiresIn: "10m"});
         } catch (error) {
             throw error;
         }

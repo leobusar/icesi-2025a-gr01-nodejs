@@ -10,13 +10,17 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
     }
 
     try {
+        //console.log("Token: "+token);
+        token = token.replace("Bearer ", "");
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET || "secret");
         req.body.loggedUser = decoded;
-        //req.params.id = decoded.user.id;
+        console.log(decoded);
+        req.params.id = decoded.user.id;
         next();
     } catch (error) {
         if (error instanceof TokenExpiredError){
             res.status(401).json("Token Expired");
+            return;
         }
         res.status(401).json("Not Authorized");
     }

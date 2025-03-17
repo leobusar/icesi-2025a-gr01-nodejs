@@ -1,11 +1,12 @@
 import { Request, Response, Router } from "express";
 import { userController } from "../controllers";
-import { auth } from "../middlewares";
+import { auth, validateSchema } from "../middlewares";
+import { userSchema } from "../schemas";
 
 export const userRouter = Router();
 
 userRouter.get("/", userController.getAll);
-userRouter.post("/",userController.create);
+userRouter.post("/",validateSchema(userSchema),userController.create);
 userRouter.get("/profile", auth, userController.get);
 
 userRouter.get("/:id", userController.get);
